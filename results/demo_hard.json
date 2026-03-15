@@ -1,0 +1,67 @@
+{
+  "case_id": "demo_hard",
+  "title": "DEMO_HARD",
+  "status": "success",
+  "vuln_type": "unknown/custom",
+  "difficulty": "low",
+  "evidence": [
+    "Command Execution: Fonction system/execve présente."
+  ],
+  "attack_plan": [
+    "Stratégie inconnue : analysez manuellement le comportement binaire dans GDB."
+  ],
+  "checksec": {},
+  "checksec_raw": "",
+  "binary_info": {
+    "file": "/root/pwn-stage/cases/demo_hard/lab_demo_hard: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=9810e2975bc530520595fce56bb1180085f4c221, for GNU/Linux 3.2.0, with debug_info, not stripped"
+  },
+  "symbols": {
+    "found_symbols": [
+      "printf",
+      "system",
+      "puts",
+      "main"
+    ]
+  },
+  "strings": {
+    "hits": [
+      "system",
+      "flag",
+      "win",
+      "/bin/sh"
+    ]
+  },
+  "deep_analysis": {
+    "arch": "amd64 (64 bits) - little",
+    "plt_imports": [
+      "lab.c",
+      "puts",
+      "system",
+      "printf",
+      "setvbuf",
+      "__isoc99_scanf",
+      "exit"
+    ],
+    "got_entries": [
+      "__libc_start_main",
+      "__gmon_start__",
+      "stdout",
+      "stdin",
+      "puts",
+      "system",
+      "printf",
+      "setvbuf",
+      "__isoc99_scanf",
+      "exit"
+    ],
+    "rop_gadgets": [
+      "leave      ->  0x4011cd",
+      "ret        ->  0x401016"
+    ],
+    "useful_strings_addrs": {
+      "/bin/sh": "0x40204f"
+    },
+    "memory_layout": {}
+  },
+  "timestamp": "2026-03-14T15:38:56Z"
+}

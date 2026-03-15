@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Inscription{% endblock %}
+{% block content %}
+<h2 class="neon">Inscription</h2>
+<form method="post" style="max-width:420px;">
+  <label class="muted">Username</label>
+  <input name="username" type="text" required>
+
+  <label class="muted">Password</label>
+  <input name="password" type="password" required>
+
+  <button class="btn btn-green" type="submit">Créer compte</button>
+</form>
+{% if msg %}<p class="muted"><b>{{ msg }}</b></p>{% endif %}
+{% endblock %}

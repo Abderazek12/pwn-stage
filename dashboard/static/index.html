@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard | Cyber PWN{% endblock %}
+{% block content %}
+<h1 class="mb-4">Audit Exploitation Cyber / PWN</h1>
+<a href="/test" class="btn btn-success mb-3">🧪 Tester un fichier .c</a>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Cas</th>
+            <th>Type</th>
+            <th>Offset</th>
+            <th>Status</th>
+            <th>Rapport</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for case in cases %}
+        <tr>
+            <td>{{ case.title }}</td>
+            <td>{{ case.vuln_type }}</td>
+            <td>{{ case.offset if 'offset' in case else '-' }}</td>
+            <td>
+                {% if case.status == "success" %}
+                    <span class="text-success font-weight-bold">✔️ Succès</span>
+                {% else %}
+                    <span class="text-danger font-weight-bold">❌ Échec</span>
+                {% endif %}
+            </td>
+            <td><pre style="color:#00ffbf">{{ case.notes }}</pre></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

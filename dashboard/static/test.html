@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Test .c | Cyber PWN{% endblock %}
+{% block content %}
+<h2>🧪 Tester un fichier .c (Exploit, Protection, Vulnérabilité...)</h2>
+<form method="POST" enctype="multipart/form-data" class="mb-3">
+    <input type="file" name="file" accept=".c" required class="form-control-file">
+    <button class="btn btn-warning ml-2" type="submit">Lancer l'analyse</button>
+</form>
+{% if result %}
+    <div class="alert alert-info mt-4">{{ result | safe }}</div>
+{% endif %}
+<a href="/" class="btn btn-link mt-2">Retour au dashboard</a>
+{% endblock %}

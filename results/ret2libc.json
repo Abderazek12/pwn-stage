@@ -1,0 +1,19 @@
+{
+  "case_id": "ret2libc",
+  "title": "Case 2 — ret2libc: Buffer Overflow to system(\"/bin/sh\")",
+  "vuln_type": "stack_overflow_ret2libc",
+  "status": "success",
+  "timestamp": "2026-02-28",
+  "checksec": { "NX": "enabled", "PIE": "off", "Canary": "off", "RELRO": "partial" },
+  "offset": 72,
+  "notes": "Overflow → contrôle RIP → appel system('/bin/sh') via libc. Shell obtenu.",
+  "libc_base": "0x00007f0a4035d000",
+  "system": "0x7f0a40890128",
+  "exit": "0x7f0a40875190",
+  "bin_sh": "0x7f0a409c47fa",
+  "artifacts": {
+    "source_path": "~/pwn-stage/cases/ret2libc/lab_ret2libc.c",
+    "binary_path": "~/pwn-stage/cases/ret2libc/lab_ret2libc",
+    "exploit_path": "~/pwn-stage/cases/ret2libc/exploit_ret2libc.py"
+  }
+}

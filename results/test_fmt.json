@@ -1,0 +1,18 @@
+{
+  "case_id": "test_fmt",
+  "title": "Uploaded: test_fmt",
+  "vuln_type": "stack_overflow",
+  "status": "analyzed",
+  "timestamp": "2026-03-08T16:52:37Z",
+  "checksec": {
+    "relro": "Partial RELRO",
+    "nx": "NX enabled",
+    "pie": "No PIE (0x400000)"
+  },
+  "notes": "Format string possible: leak et/ou overwrite (GOT) selon RELRO. Overflow stack probable. Selon NX/PIE/Canary, exploitation: ret2win/ret2libc/ROP. Présence d'une win function possible.\nEvidence: printf(user_controlled), gets(), system('/bin/sh') present",
+  "artifacts": {
+    "source_path": "/root/pwn-stage/uploads/test_fmt.c",
+    "binary_path": "/root/pwn-stage/uploads/test_fmt",
+    "compiler_output": ""
+  }
+}

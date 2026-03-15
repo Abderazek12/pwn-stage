@@ -1,0 +1,16 @@
+cat << 'EOF' > .gitignore
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# C compilations
+*.o
+*.out
+
+# Logs
+*.log
+EOF

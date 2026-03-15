@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PWN Stage{% endblock %}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+
+        :root {
+            --bg: #05080a;
+            --text: #e0e0e0;
+            --green: #19fa9c;
+            --red: #ff5252;
+            --blue: #11aaff;
+            --yellow: #ffdd57;
+            --card-bg: rgba(0,0,0,0.6);
+            --border: rgba(25, 250, 156, 0.3);
+            --line: #333;
+            --muted: #888;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Fira Code', monospace;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #000;
+            border-bottom: 2px solid var(--green);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(25, 250, 156, 0.2);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            color: var(--green);
+            text-shadow: 0 0 10px var(--green);
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--green);
+            text-shadow: 0 0 8px var(--green);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* UTILS */
+        .neon { color: var(--green); text-shadow: 0 0 5px var(--green); }
+        .muted { color: var(--muted); }
+        
+        /* GRID & CARDS */
+        .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+        
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 10px 15px;
+            border: 1px solid var(--green);
+            background: rgba(25, 250, 156, 0.1);
+            color: var(--green);
+            cursor: pointer;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Fira Code', monospace;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .btn:hover { background: rgba(25, 250, 156, 0.2); box-shadow: 0 0 10px rgba(25, 250, 156, 0.4); }
+        
+        .btn-primary { border-color: var(--blue); color: var(--blue); background: rgba(17, 170, 255, 0.1); }
+        .btn-primary:hover { background: rgba(17, 170, 255, 0.2); box-shadow: 0 0 10px rgba(17, 170, 255, 0.4); }
+        
+        .btn-danger { border-color: var(--red); color: var(--red); background: rgba(255, 82, 82, 0.1); }
+        .btn-danger:hover { background: rgba(255, 82, 82, 0.2); box-shadow: 0 0 10px rgba(255, 82, 82, 0.4); }
+
+        .btn-green { border-color: var(--green); color: var(--green); background: rgba(25, 250, 156, 0.1); }
+        .btn-yellow { border-color: var(--yellow); color: var(--yellow); background: rgba(255, 221, 87, 0.1); }
+
+        /* TAGS */
+        .tag { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .tag-blue { background: rgba(17, 170, 255, 0.2); color: var(--blue); border: 1px solid var(--blue); }
+        .tag-red { background: rgba(255, 82, 82, 0.2); color: var(--red); border: 1px solid var(--red); }
+        .tag-green { background: rgba(25, 250, 156, 0.2); color: var(--green); border: 1px solid var(--green); }
+        .tag-yellow { background: rgba(255, 221, 87, 0.2); color: var(--yellow); border: 1px solid var(--yellow); }
+    </style>
+</head>
+<body>
+
+    <!-- BARRE DE NAVIGATION -->
+    <nav class="navbar">
+        <a href="{{ url_for('index') }}" class="navbar-brand">☠️ PWN_STAGE</a>
+        <div class="nav-links">
+            {% if session.get('username') %}
+                <a href="{{ url_for('dashboard') }}">[>] Dashboard</a>
+                
+                <!-- NOUVEAU LIEN ABOUT ME -->
+                <a href="{{ url_for('aboutme') }}" style="color: #11aaff; font-weight: bold;">[>] About Me</a>
+                
+                <a href="{{ url_for('leaderboard') }}">[>] Leaderboard</a>
+                <a href="{{ url_for('results_index') }}">[>] Results</a>
+                <a href="{{ url_for('import_zip') }}">[>] Import</a>
+                <a href="{{ url_for('test') }}">[>] Test</a>
+                
+                <a href="{{ url_for('logout') }}" style="color: var(--red);">[X] Logout ({{ session.username }})</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">[>] Login</a>
+                <a href="{{ url_for('register') }}">[>] Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- CONTENU PRINCIPAL -->
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>

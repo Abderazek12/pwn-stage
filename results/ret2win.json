@@ -1,0 +1,15 @@
+{
+  "case_id": "ret2win",
+  "title": "Case 1 — Stack Buffer Overflow (ret2win)",
+  "vuln_type": "stack_overflow",
+  "status": "success",
+  "timestamp": "2026-02-28",
+  "checksec": { "NX": "enabled", "PIE": "off", "Canary": "off", "RELRO": "partial" },
+  "offset": 72,
+  "notes": "Exploit: contrôle du RIP → win() appelée → shell obtenu.",
+  "artifacts": {
+    "source_path": "~/pwn-stage/cases/ret2win/lab_ret2win.c",
+    "binary_path": "~/pwn-stage/cases/ret2win/lab_ret2win",
+    "exploit_path": "~/pwn-stage/cases/ret2win/exploit_ret2win.py"
+  }
+}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — PWN Stage{% endblock %}
+{% block content %}
+
+<div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 20px;">
+  <div>
+    <h2 class="neon">Dashboard des Challenges</h2>
+    <p class="muted">Total: {{ total }} challenge(s) importé(s) dans l'infrastructure.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('import_zip') }}">[+] Ajouter ZIP</a>
+</div>
+
+<!-- SECTION LOW -->
+<h3 style="margin-top:30px; color:#19fa9c; border-bottom: 1px solid rgba(25,250,156,.3); padding-bottom: 10px;">🟢 Facile (Low)</h3>
+<div class="grid" style="margin-top:15px;">
+  {% for ch in groups.low %}
+    <div class="card">
+      <h3 style="margin:0; font-size:18px;">{{ ch.id }}</h3>
+      <div class="muted" style="margin-top:4px; font-size:12px;">{{ ch.title }}</div>
+
+      <div style="margin-top:10px;">
+        <span class="tag tag-blue">{{ ch.vuln_type }}</span>
+        <span class="tag tag-green">low</span>
+      </div>
+
+      <p class="muted" style="margin-top:10px; font-size:13px; line-height:1.5;">
+        {{ ch.description[:120] }}{% if ch.description and ch.description|length > 120 %}...{% endif %}
+      </p>
+
+      <div style="margin-top:15px;">
+        <a class="btn btn-green" href="{{ url_for('challenge', case_id=ch.id) }}" style="width:100%; text-align:center;">Accéder au Lab</a>
+      </div>
+    </div>
+  {% else %}
+    <p class="muted" style="font-size: 13px; font-style: italic;">Aucun challenge de niveau facile détecté.</p>
+  {% endfor %}
+</div>
+
+<!-- SECTION MEDIUM -->
+<h3 style="margin-top:40px; color:#ffdd57; border-bottom: 1px solid rgba(255,221,87,.3); padding-bottom: 10px;">🟡 Intermédiaire (Medium)</h3>
+<div class="grid" style="margin-top:15px;">
+  {% for ch in groups.medium %}
+    <div class="card" style="border-color: rgba(255,221,87,.3);">
+      <h3 style="margin:0; font-size:18px;">{{ ch.id }}</h3>
+      <div class="muted" style="margin-top:4px; font-size:12px;">{{ ch.title }}</div>
+
+      <div style="margin-top:10px;">
+        <span class="tag tag-blue">{{ ch.vuln_type }}</span>
+        <span class="tag" style="border-color: #ffdd57; color: #ffdd57; background: rgba(255,221,87,.1);">medium</span>
+      </div>
+
+      <p class="muted" style="margin-top:10px; font-size:13px; line-height:1.5;">
+        {{ ch.description[:120] }}{% if ch.description and ch.description|length > 120 %}...{% endif %}
+      </p>
+
+      <div style="margin-top:15px;">
+        <a class="btn" href="{{ url_for('challenge', case_id=ch.id) }}" style="width:100%; text-align:center; border-color: #ffdd57; color: #ffdd57;">Accéder au Lab</a>
+      </div>
+    </div>
+  {% else %}
+    <p class="muted" style="font-size: 13px; font-style: italic;">Aucun challenge de niveau intermédiaire détecté.</p>
+  {% endfor %}
+</div>
+
+<!-- SECTION HARD -->
+<h3 style="margin-top:40px; color:#ff5252; border-bottom: 1px solid rgba(255,82,82,.3); padding-bottom: 10px;">🔴 Difficile (Hard)</h3>
+<div class="grid" style="margin-top:15px;">
+  {% for ch in groups.hard %}
+    <div class="card" style="border-color: rgba(255,82,82,.3);">
+      <h3 style="margin:0; font-size:18px;">{{ ch.id }}</h3>
+      <div class="muted" style="margin-top:4px; font-size:12px;">{{ ch.title }}</div>
+
+      <div style="margin-top:10px;">
+        <span class="tag tag-blue">{{ ch.vuln_type }}</span>
+        <span class="tag tag-red">hard</span>
+      </div>
+
+      <p class="muted" style="margin-top:10px; font-size:13px; line-height:1.5;">
+        {{ ch.description[:120] }}{% if ch.description and ch.description|length > 120 %}...{% endif %}
+      </p>
+
+      <div style="margin-top:15px;">
+        <a class="btn btn-danger" href="{{ url_for('challenge', case_id=ch.id) }}" style="width:100%; text-align:center;">Accéder au Lab</a>
+      </div>
+    </div>
+  {% else %}
+    <p class="muted" style="font-size: 13px; font-style: italic;">Aucun challenge de niveau difficile détecté.</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

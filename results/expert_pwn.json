@@ -1,0 +1,71 @@
+{
+  "case_id": "expert_pwn",
+  "title": "Upload: expert_pwn",
+  "status": "analyzed",
+  "vuln_type": "format_string",
+  "difficulty": "low",
+  "evidence": [
+    "Stack Overflow potentiel: gets()",
+    "Format String: printf(variable) détecté.",
+    "read() détecté: risque de Off-By-One ou d'absence de Null-Byte.",
+    "Command Execution: Fonction system/execve présente."
+  ],
+  "attack_plan": [
+    "[Étape 1] Utilisez '%p' ou '%x' pour lire la pile et trouver l'adresse de base (PIE/Libc) ou le Canary.",
+    "[Étape 2] Utilisez '%n' pour écraser une entrée dans la table GOT (ex: printf -> system)."
+  ],
+  "checksec": {},
+  "checksec_raw": "",
+  "binary_info": {
+    "file": "/root/pwn-stage/uploads/expert_pwn: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=a0fee007a83e554f95bede4c6e9eab71c070bc98, for GNU/Linux 3.2.0, with debug_info, not stripped"
+  },
+  "symbols": {
+    "found_symbols": [
+      "printf",
+      "puts",
+      "system",
+      "main"
+    ]
+  },
+  "strings": {
+    "hits": [
+      "/bin/sh",
+      "win",
+      "system",
+      "flag"
+    ]
+  },
+  "deep_analysis": {
+    "arch": "amd64 (64 bits) - little",
+    "plt_imports": [
+      "expert_pwn.c",
+      "puts",
+      "system",
+      "printf",
+      "read",
+      "gets",
+      "setvbuf"
+    ],
+    "got_entries": [
+      "__libc_start_main",
+      "__gmon_start__",
+      "stdout",
+      "stdin",
+      "puts",
+      "system",
+      "printf",
+      "read",
+      "gets",
+      "setvbuf"
+    ],
+    "rop_gadgets": [
+      "leave      ->  0x401204",
+      "ret        ->  0x401016"
+    ],
+    "useful_strings_addrs": {
+      "/bin/sh": "0x402008"
+    },
+    "memory_layout": {}
+  },
+  "timestamp": "2026-03-12T16:30:23Z"
+}

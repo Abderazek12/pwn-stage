@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Connexion{% endblock %}
+{% block content %}
+<h2 class="neon">Connexion</h2>
+<form method="post" style="max-width:420px;">
+  <label class="muted">Username</label>
+  <input name="username" type="text" required>
+
+  <label class="muted">Password</label>
+  <input name="password" type="password" required>
+
+  <button class="btn btn-primary" type="submit">Se connecter</button>
+</form>
+{% if msg %}<p style="color:#ffb6b6;"><b>{{ msg }}</b></p>{% endif %}
+{% endblock %}

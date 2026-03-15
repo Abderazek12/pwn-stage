@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Admin - Cyber Exploit{% endblock %}
+{% block content %}
+<div class="jumbotron bg-dark shadow-lg">
+  <h2>Gestion des utilisateurs</h2>
+  <table class="table table-bordered bg-dark text-info mt-4">
+    <tr><th>Nom</th><th>Admin ?</th><th>Actions</th></tr>
+    {% for u, is_admin in users %}
+      <tr>
+        <td>{{u}}</td>
+        <td>{% if is_admin %}<b class="text-warning">Oui</b>{% else %}Non{% endif %}</td>
+        <td>
+          {% if u != "admin" %}
+            <form method="post" style="display:inline">
+              <input type="hidden" name="username" value="{{u}}">
+              {% if is_admin %}
+                <button name="action" value="retrograder" class="btn btn-secondary btn-sm">Rétrograder</button>
+              {% else %}
+                <button name="action" value="promouvoir" class="btn btn-warning btn-sm">Promouvoir admin</button>
+              {% endif %}
+              <button name="action" value="supprimer" class="btn btn-danger btn-sm">Supprimer</button>
+            </form>
+          {% else %}
+            <i>Protection</i>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+  <a class="btn btn-link" href="/">⬅️ Retour dashboard</a>
+</div>
+{% endblock %}

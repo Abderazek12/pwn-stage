@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Exploit - {{ case_id }}{% endblock %}
+{% block content %}
+<h2 class="mb-4">💥 Exploit pour <b>{{ case_id }}</b></h2>
+<h4>Script Python :</h4>
+<pre>{{ code }}</pre>
+<h4>Résultat de l'exécution :</h4>
+<pre>{{ output }}</pre>
+<a href="{{ url_for('challenges') }}" class="btn btn-primary mt-2">Retour Challenges</a>
+{% endblock %}

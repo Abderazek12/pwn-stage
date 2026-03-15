@@ -1,0 +1,42 @@
+{
+  "case_id": "master_rop",
+  "title": "MASTER_ROP",
+  "status": "success",
+  "vuln_type": "rop",
+  "difficulty": "medium",
+  "evidence": [
+    "gets()"
+  ],
+  "checksec": {
+    "relro": "Partial RELRO",
+    "nx": "NX enabled",
+    "pie": "No PIE (0x400000)"
+  },
+  "checksec_raw": "[*] '/root/pwn-stage/cases/master_rop/lab_master_rop'\n    Arch:       amd64-64-little\n    RELRO:      Partial RELRO\n    Stack:      No canary found\n    NX:         NX enabled\n    PIE:        No PIE (0x400000)\n    Stripped:   No\n    Debuginfo:  Yes\n",
+  "binary_info": {
+    "file": "/root/pwn-stage/cases/master_rop/lab_master_rop: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=84b9fe91de60d45fe9b6df8b7c1c3ad75aafb37f, for GNU/Linux 3.2.0, with debug_info, not stripped"
+  },
+  "symbols": {
+    "found_symbols": [
+      "puts",
+      "win",
+      "main",
+      "printf"
+    ],
+    "nm_rc": 0
+  },
+  "strings": {
+    "hits": [
+      "win",
+      "flag"
+    ],
+    "note": "simple strings scan"
+  },
+  "notes": "Evidence détectée: gets()\nProtections: relro=Partial RELRO, nx=NX enabled, pie=No PIE (0x400000)\nStrings intéressants: win, flag",
+  "timestamp": "2026-03-10T02:20:15Z",
+  "artifacts": {
+    "case_folder": "/root/pwn-stage/cases/master_rop",
+    "source_path": "/root/pwn-stage/cases/master_rop/master_rop.c",
+    "binary_path": "/root/pwn-stage/cases/master_rop/lab_master_rop"
+  }
+}

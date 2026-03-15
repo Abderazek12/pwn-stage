@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Results{% endblock %}
+{% block content %}
+<h2 class="neon">Results</h2>
+
+<div class="card">
+  <form method="get" style="display:grid; grid-template-columns: 1fr 180px 220px 180px; gap:10px; align-items:end;">
+    <div>
+      <label class="muted">Recherche</label>
+      <input name="q" value="{{ q or '' }}" placeholder="fmt, ret2libc, NX, notes...">
+    </div>
+
+    <div>
+      <label class="muted">Difficulty</label>
+      <select name="difficulty" style="width:100%; padding:12px; border-radius:10px;">
+        <option value="all" {% if difficulty=='all' %}selected{% endif %}>All</option>
+        <option value="low" {% if difficulty=='low' %}selected{% endif %}>Low</option>
+        <option value="medium" {% if difficulty=='medium' %}selected{% endif %}>Medium</option>
+        <option value="hard" {% if difficulty=='hard' %}selected{% endif %}>Hard</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="muted">Vuln type</label>
+      <select name="vuln_type" style="width:100%; padding:12px; border-radius:10px;">
+        <option value="all" {% if vuln_type=='all' %}selected{% endif %}>All</option>
+        <option value="format_string" {% if vuln_type=='format_string' %}selected{% endif %}>format_string</option>
+        <option value="stack_overflow" {% if vuln_type=='stack_overflow' %}selected{% endif %}>stack_overflow</option>
+        <option value="unknown" {% if vuln_type=='unknown' %}selected{% endif %}>unknown</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="muted">Sort</label>
+      <select name="sort" style="width:100%; padding:12px; border-radius:10px;">
+        <option value="new" {% if sort=='new' %}selected{% endif %}>Newest</option>
+        <option value="az" {% if sort=='az' %}selected{% endif %}>A → Z</option>
+        <option value="difficulty" {% if sort=='difficulty' %}selected{% endif %}>Difficulty</option>
+      </select>
+    </div>
+
+    <div style="grid-column: 1 / -1; display:flex; gap:10px;">
+      <button class="btn btn-primary" type="submit">Appliquer</button>
+      <a class="btn" href="{{ url_for('results_index') }}">Reset</a>
+      <span class="muted" style="margin-left:auto;">{{ results_count }} résultat(s)</span>
+    </div>
+  </form>
+
+  <p class="muted" style="margin-top:10px;"><b>RESULTS_DIR:</b> <code>{{ results_dir }}</code></p>
+</div>
+
+<div class="grid" style="margin-top:16px;">
+  {% for r in results %}
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; gap:10px;">
+        <div>
+          <h3 style="margin:0;">{{ r.case_id }}</h3>
+          <div class="muted" style="margin-top:6px;">{{ r.title }}</div>
+        </div>
+        {% set d = (r.difficulty or 'medium')|lower %}
+        {% if d == "hard" %}
+          <span class="tag tag-red">hard</span>
+        {% elif d == "low" %}
+          <span class="tag tag-green">low</span>
+        {% else %}
+          <span class="tag">medium</span>
+        {% endif %}
+      </div>
+
+      <div style="margin-top:10px;">
+        <span class="tag tag-blue">{{ r.vuln_type }}</span>
+      </div>
+
+      <p class="muted" style="margin-top:10px; font-size:13px; line-height:1.45;">
+        {{ (r.notes or "")[:160] }}{% if r.notes and r.notes|length > 160 %}...{% endif %}
+      </p>
+
+      <div style="margin-top:12px;">
+        <a class="btn btn-primary" href="{{ url_for('results_view', case_id=r.case_id) }}">Voir</a>
+      </div>
+    </div>
+  {% else %}
+    <p class="muted">Aucun résultat.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Mon compte - Cyber Exploit{% endblock %}
+{% block content %}
+<div class="jumbotron bg-dark shadow-lg col-md-6 mx-auto mt-4">
+    <h2>Mon compte : {{ username }}</h2>
+    <form method="post">
+        <label>Changer mon mot de passe :</label>
+        <input type="password" name="new_password" class="form-control mb-2" required>
+        <button class="btn btn-info">Modifier</button>
+    </form>
+    {% if msg %}
+      <div class="alert alert-success mt-2">{{msg}}</div>
+    {% endif %}
+    <a href="/" class="btn btn-link mt-2">⬅️ Retour dashboard</a>
+</div>
+{% endblock %}

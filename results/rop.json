@@ -1,0 +1,25 @@
+{
+  "case_id": "rop_chain",
+  "title": "Case 4 — ROP Chain: Appel de fonction win() avec argument contrôlé",
+  "vuln_type": "buffer_overflow + ROP",
+  "status": "success",
+  "timestamp": "2026-03-01",
+  "checksec": {
+    "NX": "enabled",
+    "PIE": "off",
+    "Canary": "off",
+    "RELRO": "partial"
+  },
+  "offset": 72,
+  "pop_rdi_ret": "0x4011bf",
+  "ret_addr": "0x4011c0",
+  "magic_arg": "0xdeadbeef",
+  "target_func_addr": "0x401166",
+  "target_func": "win",
+  "notes": "Exploit buffer overflow + ROP : pop rdi ; ret ; win(0xdeadbeef). Validation du shell et passage root. Preuve d’une réelle exécution de chaîne ROP.",
+  "artifacts": {
+    "source_path": "~/pwn-stage/cases/rop/lab_rop.c",
+    "binary_path": "~/pwn-stage/cases/rop/lab_rop",
+    "exploit_path": "~/pwn-stage/cases/rop/exploit_rop.py"
+  }
+}

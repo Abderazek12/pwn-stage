@@ -1,0 +1,67 @@
+{
+  "case_id": "mon_test_reel",
+  "title": "MON_TEST_REEL",
+  "status": "success",
+  "vuln_type": "stack_overflow",
+  "difficulty": "low",
+  "evidence": [
+    "Command Execution: Fonction system/execve présente.",
+    "Stack Overflow potentiel: gets()"
+  ],
+  "attack_plan": [
+    "[Étape 3] NX désactivé ! Injectez un shellcode classique dans le buffer et sautez dessus."
+  ],
+  "checksec": {},
+  "checksec_raw": "",
+  "binary_info": {
+    "file": "/root/pwn-stage/cases/mon_test_reel/lab_mon_test_reel: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=9172cd8cc785ff381badf0bf747fe6ab3a0d2302, for GNU/Linux 3.2.0, with debug_info, not stripped"
+  },
+  "symbols": {
+    "found_symbols": [
+      "puts",
+      "win",
+      "printf",
+      "main",
+      "system"
+    ]
+  },
+  "strings": {
+    "hits": [
+      "/bin/sh",
+      "flag",
+      "system",
+      "win"
+    ]
+  },
+  "deep_analysis": {
+    "arch": "amd64 (64 bits) - little",
+    "plt_imports": [
+      "lab.c",
+      "puts",
+      "system",
+      "printf",
+      "gets",
+      "setvbuf"
+    ],
+    "got_entries": [
+      "__libc_start_main",
+      "__gmon_start__",
+      "stdout",
+      "stdin",
+      "puts",
+      "system",
+      "printf",
+      "gets",
+      "setvbuf"
+    ],
+    "rop_gadgets": [
+      "leave      ->  0x401208",
+      "ret        ->  0x401016"
+    ],
+    "useful_strings_addrs": {
+      "/bin/sh": "0x40203b"
+    },
+    "memory_layout": {}
+  },
+  "timestamp": "2026-03-13T16:42:17Z"
+}

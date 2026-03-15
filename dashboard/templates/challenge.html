@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% block title %}Challenge — {{ case_id }}{% endblock %}
+{% block content %}
+<!-- Imports pour le Terminal Web (xterm.js et SocketIO) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+<style>
+  #terminal-container {
+      width: 100%; height: 400px; background-color: #000;
+      border: 1px solid #19fa9c; border-radius: 8px; padding: 10px;
+      display: none; margin-top: 20px; box-shadow: 0 0 15px rgba(25, 250, 156, 0.2);
+  }
+  .term-header {
+      background: #111; border-bottom: 1px solid #333;
+      padding: 5px 10px; font-family: monospace; color: #19fa9c;
+      font-size: 12px; display: flex; justify-content: space-between;
+  }
+  .file-viewer {
+      background: rgba(0,0,0,0.4); border: 1px solid rgba(17,170,255,0.3);
+      border-radius: 6px; margin-bottom: 15px;
+  }
+  .file-viewer summary {
+      padding: 10px; cursor: pointer; color: #bfe9ff; font-weight: bold;
+      outline: none; list-style: none;
+  }
+  .file-viewer summary::-webkit-details-marker { display:none; }
+  .file-viewer pre {
+      margin: 0; padding: 15px; border-top: 1px solid rgba(17,170,255,0.3);
+      max-height: 400px; overflow-y: auto; font-size: 13px;
+      background: #05080a; color: var(--line);
+  }
+  .btn-yellow { 
+      background: rgba(255,221,87,.15); 
+      border-color: rgba(255,221,87,.4); 
+      color:#ffdd57; 
+  }
+  .btn-yellow:hover { 
+      box-shadow: 0 0 15px rgba(255,221,87,.3); 
+  }
+</style>
+
+<a class="btn" href="{{ url_for('dashboard') }}">← Retour au Dashboard</a>
+
+<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-top:20px;">
+  <div>
+    <h2 class="neon" style="font-size: 28px; margin:0;">{{ title }}</h2>
+    <p class="muted" style="margin-top: 5px;">ID: <code>{{ case_id }}</code></p>
+  </div>
+  <div>
+    <span class="tag tag-blue">{{ vuln_type }}</span>
+    <span class="tag {% if difficulty == 'hard' %}tag-red{% elif difficulty == 'low' %}tag-green{% else %}tag-yellow{% endif %}" style="margin-left:5px;">
+      {{ difficulty|upper }}
+    </span>
+  </div>
+</div>
+
+<!-- LEADERBOARD FLASH -->
+{% set flash_msg = session.pop('flash_msg', None) %}
+{% if flash_msg %}
+  {% set msg_type = flash_msg.split('|')[0] %}
+  {% set msg_text = flash_msg.split('|')[1] %}
+  <div class="card" style="margin-top:15px; border-color: {% if msg_type == 'success' %}#19fa9c{% elif msg_type == 'danger' %}#ff5252{% else %}#ffdd57{% endif %};">
+    <strong style="color:{% if msg_type == 'success' %}#19fa9c{% elif msg_type == 'danger' %}#ff5252{% else %}#ffdd57{% endif %};">{{ msg_text }}</strong>
+  </div>
+{% endif %}
+
+<div class="grid" style="margin-top:20px;">
+  
+  <!-- ================= COLONNE GAUCHE : INTELLIGENCE OFFENSIVE ================= -->
+  <div class="card">
+    
+    <h3 style="color:#ff5252;">🎯 Vecteurs de Faille (Source)</h3>
+    <ul style="color:#ffd1d1; list-style: square; margin-bottom: 25px; padding-left:20px; font-size: 13px; line-height: 1.6;">
+      {% for ev in result_json.evidence %}
+        <li>{{ ev }}</li>
+      {% else %}
+        <li class="muted">Aucun vecteur évident détecté dans le code.</li>
+      {% endfor %}
+    </ul>
+
+    <h3 style="color:#ffdd57;">⚔️ Plan d'Attaque Conseillé</h3>
+    <div style="background: rgba(255, 221, 87, 0.05); border-left: 3px solid #ffdd57; padding: 10px 15px; margin-bottom: 25px;">
+      {% for step in result_json.attack_plan %}
+        <p style="color:#ffdd57; font-size: 13px; margin: 5px 0;"><b>{{ step }}</b></p>
+      {% else %}
+        <p class="muted" style="font-size: 13px; margin: 0;">Aucun plan d'attaque généré.</p>
+      {% endfor %}
+    </div>
+
+    <h3 style="color:#11aaff;">[+] Protections ELF</h3>
+    <ul class="muted" style="line-height: 1.8; margin-bottom: 25px;">
+      <li><b>RELRO:</b> {{ checksec_parsed.get("relro", "N/A") }}</li>
+      <li><b>Canary:</b> {{ checksec_parsed.get("canary", "N/A") }}</li>
+      <li><b>NX:</b> {{ checksec_parsed.get("nx", "N/A") }}</li>
+      <li><b>PIE:</b> {{ checksec_parsed.get("pie", "N/A") }}</li>
+    </ul>
+
+    <h3 style="color:#19fa9c;">🧠 Pwn Intelligence (Deep Analysis)</h3>
+    {% if result_json.deep_analysis %}
+      <div style="background: rgba(0,0,0,0.5); padding: 15px; border-left: 3px solid #19fa9c; border-radius: 4px; margin-bottom: 20px; font-size: 13px;">
+        <p style="color: #e0e0e0; margin:0 0 10px 0;"><b>Arch:</b> {{ result_json.deep_analysis.arch }}</p>
+        
+        {% if result_json.deep_analysis.memory_layout %}
+        <p style="color: #19fa9c; margin:10px 0 5px 0;"><b>[>] Mémoire Utile (Writeable):</b></p>
+        <ul style="color: var(--muted); list-style: none; margin:0 0 10px 0;">
+          {% for sec, addr in result_json.deep_analysis.memory_layout.items() %}
+            <li><code>{{ sec }} -> {{ addr }}</code></li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if result_json.deep_analysis.rop_gadgets %}
+        <p style="color: #19fa9c; margin:10px 0 5px 0;"><b>[>] Auto-Gadget Finder :</b></p>
+        <ul style="color: #bfe9ff; list-style: square; margin:0 0 10px 20px;">
+          {% for gadget in result_json.deep_analysis.rop_gadgets %}
+            <li><code>{{ gadget }}</code></li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if result_json.deep_analysis.useful_strings_addrs %}
+        <p style="color: #19fa9c; margin:10px 0 5px 0;"><b>[>] Strings utiles en mémoire :</b></p>
+        <ul style="color: #11aaff; list-style: none; margin:0 0 10px 0;">
+          {% for string, addr in result_json.deep_analysis.useful_strings_addrs.items() %}
+            <li><code>{{ string }}  ->  {{ addr }}</code></li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+
+        <details style="margin-top: 15px;">
+          <summary style="cursor:pointer; color:#ffdd57; outline:none; font-weight: bold;">🔍 Voir Table GOT / PLT (Cibles)</summary>
+          <div style="margin-top: 10px; display: flex; gap: 20px;">
+            <div style="flex: 1;">
+              <b style="color: #ff5252;">GOT (Overwrite):</b>
+              <ul style="color: var(--muted); margin-top:5px; padding-left:15px;">
+                {% for func in result_json.deep_analysis.got_entries %}<li>{{ func }}</li>{% endfor %}
+              </ul>
+            </div>
+            <div style="flex: 1;">
+              <b style="color: #11aaff;">PLT (Leaks dispo):</b>
+              <ul style="color: var(--muted); margin-top:5px; padding-left:15px;">
+                {% for func in result_json.deep_analysis.plt_imports %}<li>{{ func }}</li>{% endfor %}
+              </ul>
+            </div>
+          </div>
+        </details>
+      </div>
+    {% else %}
+      <p class="muted" style="font-size:12px;">Analyse profonde non disponible.</p>
+    {% endif %}
+
+    <h3 style="color:#11aaff; margin-bottom:15px; margin-top:20px;">[+] Fichiers du Challenge</h3>
+    {% if binary %}
+      <a class="btn btn-primary" href="{{ url_for('download', case_id=case_id, fname=binary) }}" style="display:inline-block; margin-bottom:15px;">💾 Télécharger le Binaire</a>
+    {% endif %}
+
+    {% for fname, content in file_contents.items() %}
+      <details class="file-viewer">
+        <summary>👁️ Voir le fichier : {{ fname }}</summary>
+        <pre><code>{{ content }}</code></pre>
+      </details>
+    {% endfor %}
+  </div>
+
+  <!-- ================= COLONNE DROITE : TERMINAL & FLAG ================= -->
+  <div>
+    <!-- SOUMISSION DU FLAG -->
+    <div class="card" style="margin-bottom:15px; border-color: {% if is_solved %}#ffdd57{% else %}rgba(25, 250, 156, 0.4){% endif %};">
+      <h3 style="color:{% if is_solved %}#ffdd57{% else %}#19fa9c{% endif %};">🚩 Validation (Flag)</h3>
+      {% if is_solved %}
+        <p style="color:#ffdd57; font-weight:bold; margin-top:10px;">✔ Challenge résolu !</p>
+      {% else %}
+        <form action="{{ url_for('submit_flag', case_id=case_id) }}" method="post" style="margin-top:10px;">
+          <input type="text" name="flag" placeholder="PWN_STAGE{...}" required style="margin-bottom:10px;">
+          <button type="submit" class="btn btn-green" style="width:100%;">Soumettre le Flag</button>
+        </form>
+      {% endif %}
+    </div>
+
+    <!-- TERMINAL INTERACTIF -->
+    <div class="card" style="border-color: #ff5252;">
+      <h3 style="color:#ff5252;">☠️ Web Console (Pwnbox)</h3>
+      <p class="muted" style="font-size:12px; margin-bottom: 15px;">Interagissez avec le challenge directement depuis votre navigateur.</p>
+      
+      {% if binary %}
+          <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+            <!-- Bouton Normal -->
+            <button class="btn btn-primary" onclick="openTerminal('{{ binary }}', 'normal')" style="flex: 1;">[>] Lancer Normalement</button>
+            <!-- NOUVEAU BOUTON GDB -->
+            <button class="btn btn-yellow" onclick="openTerminal('{{ binary }}', 'gdb')" style="flex: 1;">[🐛] Debugger (GDB)</button>
+          </div>
+      {% endif %}
+      
+      {% for py in pyfiles %}
+          <button class="btn btn-danger" onclick="openTerminal('{{ py }}', 'normal')" style="width:100%; margin-bottom:10px;">[☠] Exécuter {{ py }}</button>
+      {% endfor %}
+      
+      <!-- Conteneur du terminal -->
+      <div id="terminal-wrapper" style="display:none; margin-top: 15px;">
+        <div class="term-header">
+            <span id="term-title">root@pwn-stage:~#</span>
+            <button onclick="closeTerminal()" style="background:transparent; border:none; color:#ff5252; cursor:pointer;">[X] Kill</button>
+        </div>
+        <div id="terminal-container"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS POUR LE TERMINAL XTERM.JS -->
+<script>
+  let term;
+  let socket;
+  const termWrapper = document.getElementById("terminal-wrapper");
+  const termContainer = document.getElementById("terminal-container");
+  const termTitle = document.getElementById("term-title");
+
+  // Ajout du paramètre "mode" (normal ou gdb)
+  function openTerminal(fileToRun, mode) {
+      termWrapper.style.display = "block";
+      termContainer.style.display = "block";
+      termContainer.innerHTML = "";
+      
+      if (mode === 'gdb') {
+          termTitle.innerText = `Débogage (GDB) : ${fileToRun}`;
+          termTitle.style.color = "#ffdd57";
+      } else {
+          termTitle.innerText = `Exécution : ${fileToRun}`;
+          termTitle.style.color = "#19fa9c";
+      }
+
+      term = new Terminal({
+          cursorBlink: true,
+          theme: { background: '#000', foreground: '#19fa9c' },
+          fontFamily: 'Fira Code, monospace',
+          fontSize: 14
+      });
+      
+      const fitAddon = new FitAddon.FitAddon();
+      term.loadAddon(fitAddon);
+      term.open(termContainer);
+      fitAddon.fit();
+
+      socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + '/pty');
+
+      socket.on('connect', function() {
+          if (mode === 'gdb') {
+              term.writeln('\x1b[33m[+] Démarrage de GDB... Patientez.\x1b[0m\r\n');
+          } else {
+              term.writeln('\x1b[32m[+] Connexion PTY établie. Lancement...\x1b[0m\r\n');
+          }
+          // On envoie le mode au backend Flask
+          socket.emit('start-exploit', { case_id: "{{ case_id }}", file: fileToRun, mode: mode });
+          socket.emit('resize', { cols: term.cols, rows: term.rows });
+      });
+
+      socket.on('pty-output', function(data) {
+          term.write(data.output);
+      });
+
+      term.onData(function(data) {
+          socket.emit('pty-input', { input: data });
+      });
+
+      window.addEventListener('resize', () => {
+          fitAddon.fit();
+          socket.emit('resize', { cols: term.cols, rows: term.rows });
+      });
+  }
+
+  function closeTerminal() {
+      if (socket) { socket.disconnect(); }
+      if (term) { term.dispose(); }
+      termWrapper.style.display = "none";
+  }
+</script>
+{% endblock %}

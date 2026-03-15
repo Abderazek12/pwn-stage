@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Result — {{ case_id }}{% endblock %}
+{% block content %}
+<a class="btn" href="{{ url_for('results_index') }}">← Results</a>
+
+<h2 style="margin-top:14px;">Rapport: <span class="neon">{{ case_id }}</span></h2>
+<p class="muted"><b>RESULTS_DIR:</b> <code>{{ results_dir }}</code></p>
+
+<div class="grid" style="margin-top:16px;">
+  <div class="card">
+    <h3>Résumé</h3>
+    <p class="muted"><b>Titre:</b> {{ data.get("title", case_id) }}</p>
+    <p class="muted"><b>Type:</b> <span class="tag tag-blue">{{ data.get("vuln_type","N/A") }}</span></p>
+    <p class="muted"><b>Status:</b> {{ data.get("status","unknown") }}</p>
+    <p class="muted"><b>Timestamp:</b> {{ data.get("timestamp","") }}</p>
+  </div>
+
+  <div class="card">
+    <h3>Checksec</h3>
+    {% set chk = data.get("checksec", {}) %}
+    <ul class="muted">
+      <li>RELRO: {{ chk.get("relro", "N/A") }}</li>
+      <li>Canary: {{ chk.get("canary", "N/A") }}</li>
+      <li>NX: {{ chk.get("nx", "N/A") }}</li>
+      <li>PIE: {{ chk.get("pie", "N/A") }}</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <h3>Notes</h3>
+  <p class="muted" style="white-space:pre-wrap; line-height:1.6;">{{ data.get("notes","") }}</p>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <h3>Artifacts</h3>
+  <pre style="color:#cfe3ff;">{{ data.get("artifacts", {}) | tojson(indent=2) }}</pre>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <h3>JSON brut</h3>
+  <pre style="color:#d6fdf1;">{{ data | tojson(indent=2) }}</pre>
+</div>
+{% endblock %}

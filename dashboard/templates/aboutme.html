@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}About the Author{% endblock %}
+{% block content %}
+
+<style>
+  .matrix-terminal {
+      background-color: #000000;
+      border: 1px solid #19fa9c;
+      border-radius: 8px;
+      padding: 25px;
+      font-family: 'Fira Code', monospace;
+      color: #19fa9c;
+      box-shadow: 0 0 20px rgba(25, 250, 156, 0.15);
+      line-height: 1.6;
+      font-size: 14px;
+      overflow-x: auto;
+      margin-top: 20px;
+  }
+  .prompt { color: #ff5252; font-weight: bold; }
+  .command { color: #ffffff; font-weight: bold; }
+  .highlight { color: #ffdd57; font-weight: bold; }
+  .string { color: #11aaff; }
+  .comment { color: #666; font-style: italic; }
+  .blink { animation: blinker 1s linear infinite; }
+  @keyframes blinker { 50% { opacity: 0; } }
+  
+  .terminal-section { margin-bottom: 20px; }
+  .terminal-list { list-style: none; padding-left: 15px; margin: 5px 0; }
+  .terminal-list li::before { content: "[+] "; color: #ffdd57; }
+</style>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-top: 20px;">
+    <h2 class="neon">[>] VULNERABILITY OPERATION CENTER ANALYST</h2>
+    <a class="btn" href="{{ url_for('dashboard') }}">← Retour au Dashboard</a>
+</div>
+
+<div class="matrix-terminal">
+    <!-- WHOAMI -->
+    <div class="terminal-section">
+        <span class="prompt">root@pwn-stage:~#</span> <span class="command">./whoami.sh</span><br>
+        <span class="comment"># INITIALIZING PROFILE...</span><br>
+        <span class="highlight">NAME:</span> Abderazek TRABELSI<br>
+        <span class="highlight">ROLE:</span> Vulnerability Operation Center Analyst @ <span class="string">TDS Global Technologies</span><br>
+        <span class="highlight">MAIL:</span> abdoutrabelsu@outlook.fr
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div class="terminal-section">
+        <span class="prompt">root@pwn-stage:~#</span> <span class="command">cat /var/log/experience.log</span><br>
+        
+        <br><span class="highlight">[ 10/2024 - Present ]</span> VOC Analyst @ TDS Global Technologies (Nomios Group)<br>
+        <ul class="terminal-list">
+            <li>Attack Surface Management & Vulnerability Intelligence</li>
+            <li>Web Application Penetration Testing</li>
+            <li>Threat Hunting & Proactive Defense</li>
+        </ul>
+
+        <br><span class="highlight">[ 11/2023 - 07/2024 ]</span> Cyber Security Consultant @ Global It-Vision<br>
+        <ul class="terminal-list">
+            <li>Vulnerability Assessment & Network Traffic Analysis</li>
+            <li>Threat Detection and Response</li>
+        </ul>
+
+        <br><span class="highlight">[ 01/2023 - 05/2023 ]</span> Penetration Tester Intern @ RaiseGuard<br>
+        <ul class="terminal-list">
+            <li>Active Directory Penetration Testing (CrackMapExec, BloodHound, Mimikatz)</li>
+            <li>Vulnerability Discovering on authentication protocols</li>
+        </ul>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="terminal-section">
+        <span class="prompt">root@pwn-stage:~#</span> <span class="command">ls -la /etc/skills/</span><br>
+        <span class="string">drwxr-xr-x</span>  Vulnerability_Management (Darktrace, Qualys, Hackuity)<br>
+        <span class="string">drwxr-xr-x</span>  Web_Mobile_Pentesting (Burp Suite, Frida, MobiSF)<br>
+        <span class="string">drwxr-xr-x</span>  Threat_Hunting (MITRE ATT&CK, Recorded Future)<br>
+        <span class="string">drwxr-xr-x</span>  Network_AD_Pentesting (Nmap, Metasploit, Nessus)
+    </div>
+
+    <!-- CERTIFICATIONS -->
+    <div class="terminal-section">
+        <span class="prompt">root@pwn-stage:~#</span> <span class="command">cat ~/certifications.json | jq</span><br>
+        {<br>
+        &nbsp;&nbsp;<span class="string">"eWPT"</span>: "Web Application Penetration Tester eXtreme (INE)",<br>
+        &nbsp;&nbsp;<span class="string">"eMAPT"</span>: "Mobile Application Penetration Testing (INE)",<br>
+        &nbsp;&nbsp;<span class="string">"ePPT"</span>: "Professional Penetration Testing (INE)",<br>
+        &nbsp;&nbsp;<span class="string">"Threat_Hunting"</span>: "Certified Analyst Lab (Recorded Future)",<br>
+        &nbsp;&nbsp;<span class="string">"Cisco"</span>: ["CyberOps Associate", "CCNA 1 & 3"]<br>
+        }
+    </div>
+
+    <!-- EDUCATION -->
+    <div class="terminal-section">
+        <span class="prompt">root@pwn-stage:~#</span> <span class="command">grep "Degree" education.txt</span><br>
+        <span class="highlight">[2023 - Present]</span> Cyber-Security Engineering @ Tek-UP University<br>
+        <span class="highlight">[2019 - 2023]</span> Bachelor's Degree in Computer and Comm. Technologies @ ISET'Com
+    </div>
+
+    <!-- EXIT -->
+    <div class="terminal-section">
+        <span class="prompt">root@pwn-stage:~#</span> <span class="command">exit</span><br>
+        <span class="comment">logout</span><br>
+        Connection to pwn-stage closed.<br>
+        <span class="blink">_</span>
+    </div>
+</div>
+
+{% endblock %}

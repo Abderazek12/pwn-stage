@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Accueil — PWN Stage{% endblock %}
+{% block content %}
+<style>
+  .typewriter h1 {
+    overflow: hidden; border-right: .15em solid #19fa9c; white-space: nowrap;
+    margin: 0 auto; letter-spacing: .15em;
+    animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+  }
+  @keyframes typing { from { width: 0 } to { width: 100% } }
+  @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #19fa9c; } }
+  .term-box { background: #05080a; border: 1px solid #333; border-top: 25px solid #222; border-radius: 8px; padding: 20px; margin-top: 20px; position: relative;}
+  .term-box::before { content: "root@pwn-platform:~"; position: absolute; top: -20px; left: 10px; color: #888; font-size: 12px; font-family: monospace;}
+</style>
+
+<div class="typewriter" style="text-align:center; max-width: 600px; margin-bottom: 30px;">
+  <h1 class="neon">>_ PWN STAGE PLATFORM</h1>
+</div>
+
+<div class="term-box">
+  <p style="color:#19fa9c;">[+] Initializing system...</p>
+  <p style="color:#19fa9c;">[+] Loading vulnerability analyzer modules... OK</p>
+  <p style="color:#19fa9c;">[+] Checksec & Symbols engine... READY</p>
+  <br>
+  <p class="muted">
+    Bienvenue sur l'infrastructure d'entraînement à l'exploitation de binaires.<br>
+    Détectez automatiquement les failles (Stack Overflow, Format String, ROP...) et analysez la difficulté de vos binaires ELF.
+  </p>
+</div>
+
+<div style="text-align:center; margin-top:30px;">
+{% if not session.get("username") %}
+  <a class="btn btn-primary" href="{{ url_for('login') }}" style="font-size:16px; padding: 12px 30px;">AUTH / LOGIN</a>
+  <a class="btn btn-green" href="{{ url_for('register') }}" style="font-size:16px; padding: 12px 30px;">REGISTER</a>
+{% else %}
+  <a class="btn btn-green" href="{{ url_for('dashboard') }}" style="font-size:16px; padding: 12px 30px;">ACCESS DASHBOARD</a>
+{% endif %}
+</div>
+{% endblock %}

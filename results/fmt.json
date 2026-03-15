@@ -1,0 +1,24 @@
+{
+  "case_id": "format_string",
+  "title": "Case 3 — Format String: GOT Overwrite to win function",
+  "vuln_type": "format_string",
+  "status": "success",
+  "timestamp": "2026-03-01",
+  "checksec": {
+    "NX": "enabled",
+    "PIE": "off",
+    "Canary": "off",
+    "RELRO": "partial"
+  },
+  "offset": 4,
+  "target_got": "0x404008",
+  "target_func": "printf",
+  "overwrite_addr": "0x401156",
+  "overwrite_func": "secret",
+  "notes": "Exploit : format string écrase printf@got par secret(), déclenchant system('/bin/sh'). Shell obtenu (même si le prompt n’apparaît pas, les commandes fonctionnent).",
+  "artifacts": {
+    "source_path": "~/pwn-stage/cases/fmt/lab_fmt.c",
+    "binary_path": "~/pwn-stage/cases/fmt/lab_fmt",
+    "exploit_path": "~/pwn-stage/cases/fmt/exploit_fmt.py"
+  }
+}

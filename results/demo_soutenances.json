@@ -1,0 +1,66 @@
+{
+  "case_id": "demo_soutenances",
+  "title": "DEMO_SOUTENANCES",
+  "status": "success",
+  "vuln_type": "stack_overflow",
+  "difficulty": "low",
+  "evidence": [
+    "Command Execution: Fonction system/execve présente.",
+    "Stack Overflow potentiel: gets()"
+  ],
+  "attack_plan": [
+    "[Étape 3] NX désactivé ! Injectez un shellcode classique dans le buffer et sautez dessus."
+  ],
+  "checksec": {},
+  "checksec_raw": "",
+  "binary_info": {
+    "file": "/root/pwn-stage/cases/demo_soutenances/lab_demo_soutenances: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=5e3e4b6d1cab22e19d9e5c6e52443b1945dc404d, for GNU/Linux 3.2.0, with debug_info, not stripped"
+  },
+  "symbols": {
+    "found_symbols": [
+      "system",
+      "printf",
+      "puts",
+      "main"
+    ]
+  },
+  "strings": {
+    "hits": [
+      "flag",
+      "system",
+      "win",
+      "/bin/sh"
+    ]
+  },
+  "deep_analysis": {
+    "arch": "amd64 (64 bits) - little",
+    "plt_imports": [
+      "lab.c",
+      "puts",
+      "system",
+      "printf",
+      "gets",
+      "setvbuf"
+    ],
+    "got_entries": [
+      "__libc_start_main",
+      "__gmon_start__",
+      "stdout",
+      "stdin",
+      "puts",
+      "system",
+      "printf",
+      "gets",
+      "setvbuf"
+    ],
+    "rop_gadgets": [
+      "leave      ->  0x4011f2",
+      "ret        ->  0x401016"
+    ],
+    "useful_strings_addrs": {
+      "/bin/sh": "0x402085"
+    },
+    "memory_layout": {}
+  },
+  "timestamp": "2026-03-14T14:34:13Z"
+}

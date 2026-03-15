@@ -1,0 +1,45 @@
+{
+  "case_id": "mon_super_challenge",
+  "title": "MON_SUPER_CHALLENGE",
+  "status": "success",
+  "vuln_type": "rop",
+  "difficulty": "medium",
+  "evidence": [
+    "gets()",
+    "system('/bin/sh') present"
+  ],
+  "checksec": {
+    "relro": "Partial RELRO",
+    "nx": "NX enabled",
+    "pie": "No PIE (0x400000)"
+  },
+  "checksec_raw": "[*] '/root/pwn-stage/cases/mon_super_challenge/lab_mon_super_challenge'\n    Arch:       amd64-64-little\n    RELRO:      Partial RELRO\n    Stack:      No canary found\n    NX:         NX enabled\n    PIE:        No PIE (0x400000)\n    Stripped:   No\n    Debuginfo:  Yes\n",
+  "binary_info": {
+    "file": "/root/pwn-stage/cases/mon_super_challenge/lab_mon_super_challenge: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=a1bae9bdd0112ba10ce6604928124705ebcd7e7f, for GNU/Linux 3.2.0, with debug_info, not stripped"
+  },
+  "symbols": {
+    "found_symbols": [
+      "system",
+      "printf",
+      "main",
+      "win",
+      "puts"
+    ],
+    "nm_rc": 0
+  },
+  "strings": {
+    "hits": [
+      "system",
+      "/bin/sh",
+      "win"
+    ],
+    "note": "simple strings scan"
+  },
+  "notes": "Evidence détectée: gets(), system('/bin/sh') present\nProtections: relro=Partial RELRO, nx=NX enabled, pie=No PIE (0x400000)\nStrings intéressants: system, /bin/sh, win",
+  "timestamp": "2026-03-10T02:11:56Z",
+  "artifacts": {
+    "case_folder": "/root/pwn-stage/cases/mon_super_challenge",
+    "source_path": "/root/pwn-stage/cases/mon_super_challenge/vuln.c",
+    "binary_path": "/root/pwn-stage/cases/mon_super_challenge/lab_mon_super_challenge"
+  }
+}

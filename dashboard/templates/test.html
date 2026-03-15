@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Test Upload{% endblock %}
+{% block content %}
+<h2 class="neon">Test Upload (.c) & Analyse Intelligente</h2>
+<p class="muted">
+  La plateforme compile le code, lance <code>checksec</code>, scanne les <code>strings</code> et <code>symbols</code>, 
+  estime la difficulté et génère un rapport JSON complet.
+</p>
+
+<form method="post" enctype="multipart/form-data" style="max-width:520px;">
+  <input type="file" name="file" accept=".c" required>
+  <button class="btn btn-primary" type="submit">Envoyer & Analyser</button>
+</form>
+
+{% if msg %}
+  <p class="tag tag-green" style="margin-top:10px; font-size:14px;">{{ msg }}</p>
+{% endif %}
+
+{% if analysis %}
+  <div class="card" style="margin-top:16px;">
+    <h3>Résumé de l'Analyse</h3>
+    <div style="display:flex; gap:10px; margin-bottom: 15px;">
+        <span class="tag tag-blue">{{ analysis.report.vuln_type }}</span>
+        {% if analysis.report.difficulty == 'hard' %}
+            <span class="tag tag-red">Hard</span>
+        {% elif analysis.report.difficulty == 'medium' %}
+            <span class="tag">Medium</span>
+        {% else %}
+            <span class="tag tag-green">Low</span>
+        {% endif %}
+    </div>
+
+    <p class="muted"><b>case_id:</b> {{ analysis.case_id }}</p>
+    <p class="muted"><b>Evidence code:</b> {{ analysis.report.evidence }}</p>
+    
+    {% if analysis.report.strings.hits %}
+        <p class="muted"><b>Strings trouvées:</b> <span style="color:#19fa9c;">{{ analysis.report.strings.hits }}</span></p>
+    {% endif %}
+    {% if analysis.report.symbols.found_symbols %}
+        <p class="muted"><b>Symboles détectés:</b> <span style="color:#11aaff;">{{ analysis.report.symbols.found_symbols }}</span></p>
+    {% endif %}
+
+    <h4 style="margin-top: 15px;">Checksec (raw)</h4>
+    <pre>{{ analysis.report.checksec_raw }}</pre>
+
+    <div style="margin-top:15px;">
+        <a class="btn btn-primary" href="{{ url_for('results_view', case_id=analysis.case_id) }}">Voir le rapport JSON complet</a>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

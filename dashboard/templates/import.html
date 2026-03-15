@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Import Challenge{% endblock %}
+{% block content %}
+<h2 class="neon">Import Challenge (.zip)</h2>
+<p class="muted">Uploadez une archive ZIP contenant au moins un fichier <code>.c</code> (et un script <code>exploit.py</code> optionnel).<br>La plateforme s'occupe du reste : création du dossier, compilation, analyse intelligente et ajout au dashboard.</p>
+
+<form method="post" enctype="multipart/form-data" style="max-width:500px; margin-top: 20px;">
+  <div class="card">
+    <input type="file" name="zipfile" accept=".zip" required style="margin-bottom:15px; background: rgba(0,0,0,0.8);">
+    <button class="btn btn-green" type="submit" style="width:100%; font-size:16px; padding: 12px;">Importer le Challenge</button>
+  </div>
+</form>
+
+{% if msg %}
+  <div class="card" style="margin-top:20px; border-color:var(--blue);">
+    <h3 style="color:var(--blue); margin-bottom: 10px;">[+] Action Result</h3>
+    <p class="muted" style="white-space: pre-wrap;">{{ msg }}</p>
+    
+    {% if imported %}
+      <div style="margin-top:15px;">
+        <a class="btn btn-primary" href="{{ url_for('challenge', case_id=imported) }}">Aller au Challenge</a>
+        <a class="btn" href="{{ url_for('results_view', case_id=imported) }}">Voir le JSON</a>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}
